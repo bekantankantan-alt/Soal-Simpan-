@@ -24,6 +24,38 @@ jobs:
           unzip -q TugasKu-Android-Project.zip -d extracted
           test -f extracted/TugasKu_Android_Project/app/build.gradle
 
+      - name: Fix Java and Kotlin JVM targets
+        working-directory: extracted/TugasKu_Android_Project
+        run: |
+          cat > app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+              id 'org.jetbrains.kotlin.android'
+          }
+
+          android {
+              namespace 'id.tugasku.ut'
+              compileSdk 35
+
+              defaultConfig {
+                  applicationId 'id.tugasku.ut'
+                  minSdk 23
+                  targetSdk 35
+                  versionCode 1
+                  versionName '1.0'
+              }
+
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+
+              kotlinOptions {
+                  jvmTarget = '17'
+              }
+          }
+          EOF
+
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
